@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0.2">
+<procedure name="OCRReader">
+<interface>
+<io>
+<par name="TestImage" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="OCRHandleFilename" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="Labels" base_type="ctrl" dimension="0"/>
+<par name="RegionXCoords" base_type="ctrl" dimension="0"/>
+<par name="RegionYCoords" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>global tuple APPDATA_PUBLIC</l>
+<c>* Conversion rgb to gray image</c>
+<l>rgb1_to_gray (TestImage, GrayImageTest)</l>
+<c>* Set domain for image processing</c>
+<l>full_domain (GrayImageTest, GrayImageTest)</l>
+<c>* Segment the image</c>
+<l>binary_threshold (GrayImageTest, RegionTest, 'max_separability', 'dark', UsedThreshold)</l>
+<c>* Compute the correct connected components</c>
+<l>connection (RegionTest, ConnectedRegionsTest)</l>
+<c>* Reduce each connected component (character) to its original shape</c>
+<l>intersection (ConnectedRegionsTest, RegionTest, RegionIntersectionTest)</l>
+<c>* Constrain segmented regions due to size</c>
+<c>* TODO: Should be an input parameter</c>
+<l>select_shape (RegionIntersectionTest, SelectedRegionsTest, 'area', 'and', 100, 8000)</l>
+<c>* Sort the characters line-by-line</c>
+<l>sort_region (SelectedRegionsTest, SortedRegionsTest, 'character', 'true', 'row')</l>
+<c>* Read classifier from previously trained ocr handle stored in the specified file</c>
+<l>read_ocr_class_mlp (APPDATA_PUBLIC+OCRHandleFilename, OCRHandle)</l>
+<c>* Do classification</c>
+<l>do_ocr_multi_class_mlp (SelectedRegionsTest, GrayImageTest, OCRHandle, Class, Confidence)</l>
+<c>* Calculate center positions of processed regions</c>
+<l>area_center (SelectedRegionsTest, area, rows, cols)</l>
+<c>* Set return values: Label and position for each segmented region</c>
+<l>Labels := Class</l>
+<l>RegionXCoords := cols</l>
+<l>RegionYCoords := rows</l>
+<c>* Free memory</c>
+<l>clear_ocr_class_mlp (OCRHandle)</l>
+<l>return ()</l>
+</body>
+<docu id="OCRReader">
+<parameters>
+<parameter id="Labels"/>
+<parameter id="OCRHandleFilename"/>
+<parameter id="RegionXCoords"/>
+<parameter id="RegionYCoords"/>
+<parameter id="TestImage"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>
