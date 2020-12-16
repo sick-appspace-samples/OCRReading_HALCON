@@ -72,8 +72,7 @@ local function main()
   if ocrHandleFound then
     -- Loading test image
     local testImage = Image.load('resources/TestImage.bmp')
-    local viewer = View.create()
-    viewer:setID('viewer2D')
+    local viewer = View.create("viewer2D1")
 
     -- Reading characters using OCR handle in testImage
     -- Getting labels which denote the classified characters for each segmented region
