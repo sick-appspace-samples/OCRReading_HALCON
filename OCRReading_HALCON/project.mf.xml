@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <manifest>
     <application name="OCRReading_HALCON">
         <crown name="OCRReading_HALCON">
@@ -7,21 +7,10 @@
         </crown>
         <meta key="author">AppSpace Sample</meta>
         <meta key="version">2.5.0</meta>
-        <meta key="licensed">false</meta>
         <meta key="priority">low</meta>
         <meta key="tags">OCR,Halcon12</meta>
         <meta key="read-protected">false</meta>
         <meta key="copy-protected">false</meta>
-        <entry path="pages" default="Viewer.msdd">
-            <file type="application/zip">Viewer.msdd</file>
-        </entry>
-        <entry path="resources">
-            <file type="application">ocrhandle.ocm</file>
-            <file type="text/xml">OCRReader.hdvp</file>
-            <file type="image">TestImage.bmp</file>
-        </entry>
-        <entry path="scripts" default="OCRReading.lua">
-            <file type="text/x-lua">OCRReading.lua</file>
-        </entry>
+        <entry default="OCRReading.lua" path="scripts"/>
     </application>
 </manifest>
