@@ -3,7 +3,11 @@ print('AppEngine Version: ' .. Engine.getVersion())
 
 --Start of Function and Event Scope---------------------------------------------
 
---@readOCR(img:Image,handleFile:string)
+---@param img Image
+---@param handleFile string
+---@return string[]
+---@return float[]
+---@return float[]
 local function readOCR(img, handleFile)
   -- Creating HALCON handle
   local hdevOCRReader = Halcon.create()
@@ -47,7 +51,7 @@ local function main()
   if ocrHandleFound then
     -- Loading test image
     local testImage = Image.load('resources/TestImage.bmp')
-    local viewer = View.create("viewer2D1")
+    local viewer = View.create()
 
     -- Reading characters using OCR handle in testImage
     -- Getting labels which denote the classified characters for each segmented region
@@ -60,19 +64,18 @@ local function main()
     local labelsSize = table.maxn(labels)
 
     viewer:clear()
-    local imageID = viewer:addImage(testImage)
+    viewer:addImage(testImage)
     viewer:present()
 
+    local textDeco = View.TextDecoration.create():setSize(30)
     for i = 1, labelsSize do
-      local textDeco = View.TextDecoration.create()
-      textDeco:setSize(30)
       -- show all characters on a straight line ignoring offsets and deviations
       -- in character positions to previous -20 < pos < 20
       if (i > 1 and math.abs(yCoords[i] - yCoords[i - 1]) < 20) then
         yCoords[i] = yCoords[i - 1]
       end
       textDeco:setPosition(xCoords[i], yCoords[i] + 55)
-      viewer:addText(labels[i], textDeco, nil, imageID)
+      viewer:addText(labels[i], textDeco)
     end
     viewer:present()
     print('See 2D viewer for Result')
